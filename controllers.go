@@ -25,3 +25,18 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 
 	tmpl["index"].Execute(w, contextData)
 }
+
+func aboutController(w http.ResponseWriter, r *http.Request) {
+
+	tmpl["about"].Execute(w, "nothing")
+}
+
+func eventsController(w http.ResponseWriter, r *http.Request) {
+
+	tmpl["events"].Execute(w, "nothing")
+}
+
+func createController(w http.ResponseWriter, r *http.Request) {
+
+	tmpl["create"].Execute(w, "nothing")
+}
