@@ -1,17 +1,22 @@
-{{define "layout"}}
-<!DOCTYPE html>
-<html lang="en-US">
-    <head>
-        <title>{{template "title" .}}</title>
-    </head>
-    <body>
-        <header>
-        </header>
-        <div>
-            {{template "content" .}}
-        </div>
-        <footer>        
-        </footer>
-    </body>
-</html>
+{{template "layout" .}}
+
+{{define "title"}}
+	My eventbrite clone
+{{end}}
+
+{{define "content"}}
+<header>
+    <img id="logo" alt="logo" height=100 width=auto src="https://www.pngitem.com/pimgs/m/96-960627_dragon-ball-clipart-super-saiyan-x-free-clip.png">
+</header>
+<h1 class="title">About Us</h1>
+<p>
+	Hi, today is {{.Today.Format "Jan 02, 2006"}}
+    Here's where the info about our team lives
+</p>
+
+<footer>
+    <img height=50px width=auto src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Yale_School_of_Management_shield.svg/1200px-Yale_School_of_Management_shield.svg.png" alt="SOM shield" class="som-shield">
+    <a href="/about">About us</a>
+    <a href="/">Home</a>            
+</footer>
 {{end}}
