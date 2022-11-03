@@ -1,7 +1,12 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
+	"os"
+	"path"
+	"strconv"
 	"time"
 )
 
@@ -33,7 +38,29 @@ func aboutController(w http.ResponseWriter, r *http.Request) {
 
 func eventsController(w http.ResponseWriter, r *http.Request) {
 
-	tmpl["events"].Execute(w, "nothing")
+	fetch_id, err := strconv.Atoi(path.Base(r.URL.Path))
+	if errors.Is(err, strconv.ErrSyntax) {
+		fmt.Println("Error 404 page does not exist")
+		os.Exit(1)
+	}
+
+	type EventContextData struct {
+		Event     Event
+		Rsvp_data []string
+	}
+
+	Requested_Event, err := getEventByID(fetch_id)
+	if err != nil {
+		http.Error(w, "database error", http.StatusInternalServerError)
+		return
+	}
+
+	contextData := EventContextData{
+		Event:     Requested_Event,
+		Rsvp_data: []string{"dummyemail1@yale.edu, dummyemail2@gmail.com"},
+	}
+
+	tmpl["index"].Execute(w, contextData)
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
