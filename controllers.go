@@ -60,7 +60,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 		Rsvp_data: []string{"dummyemail1@yale.edu, dummyemail2@gmail.com"},
 	}
 
-	tmpl["index"].Execute(w, contextData)
+	tmpl["events"].Execute(w, contextData)
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
