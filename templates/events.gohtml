@@ -21,20 +21,19 @@
 </p>
 <p>
 <ul>
-	{{range $email := .Rsvp_data}}
-		<li>
-			{{$email}}
-		</li>
+	{{range .Rsvp_data}}
+		<li>{{.}}</li>
 	{{end}}
 </ul>
-	Here's the page where the events will populate
 </p>
 <p>
 <img src="{{.Event.Image}}" alt="event image">
 </p>
 <p>RSVP form:</p>
+<p>
 	<form method="POST">
 		<input type="email" name="email">
 		<input type="submit">
 	</form>
+</p>
 {{end}}
