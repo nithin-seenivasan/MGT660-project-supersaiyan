@@ -57,7 +57,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 
 	contextData := EventContextData{
 		Event:     Requested_Event,
-		Rsvp_data: []string{"dummyemail1@yale.edu, dummyemail2@gmail.com"},
+		Rsvp_data: []string{"dummyemail1@yale.edu", "dummyemail2@gmail.com"},
 	}
 
 	tmpl["events"].Execute(w, contextData)
