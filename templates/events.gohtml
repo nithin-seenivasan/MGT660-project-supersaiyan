@@ -1,22 +1,22 @@
 {{template "layout" .}}
 
 {{define "title"}}
-	{{.Requested_Event.Title}}
+	{{.Event.Title}}
 {{end}}
 
 {{define "content"}}
-<h1 class="title">{{.Requested_Event.Title}}</h1>
+<h1 class="title">{{.Event.Title}}</h1>
 <p>
 	{{.Requested_Event.Location}}
 </p>
 <p>
-	<a href="/events/{{.Requested_Event.ID}}/donate">
+	<a href="/events/{{.Event.ID}}/donate">
 		Want to support?
 	</a>
 </p>
 <p>
 <time>
-	{{.Requested_Event.Date}}
+	{{.Event.Date}}
 </time>
 </p>
 <p>
@@ -30,7 +30,7 @@
 	Here's the page where the events will populate
 </p>
 <p>
-<img src="{{Requested_Event.Image}}" alt="event image">
+<img src="{{Event.Image}}" alt="event image">
 </p>
 <p>RSVP form:</p>
 	<form method="POST">
