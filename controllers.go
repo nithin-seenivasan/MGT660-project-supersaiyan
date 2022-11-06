@@ -36,7 +36,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
-	tmpl["create"].Execute(w, "nothing")
+	tmpl["create"].Execute(w, "")
 }
 
 func addNewEventToDb(w http.ResponseWriter, r *http.Request) {
@@ -54,13 +54,24 @@ func addNewEventToDb(w http.ResponseWriter, r *http.Request) {
 	location := r.FormValue("location")
 	image := r.FormValue("image")
 	date := r.FormValue("date")
+	var errorMessage string
+	if len(title) < 2 {
+		errorMessage = "Title is invalid!"
+	}
+
+	if len(location) < 2 {
+		errorMessage = errorMessage + " Location is invalid!"
+	}
+
+	//Do regex for Image
 
 	//Parses date string to time.Time element
 	parsedDate, err := time.Parse("2006-01-02T15:04", date)
 	if err != nil {
+		errorMessage = errorMessage + " Date is invalid!"
 		println("Parsed Date Error Handler")
+		println(errorMessage)
 		println(err.Error())
-		return
 	}
 
 	//Create a Event element with the new variables
@@ -71,16 +82,21 @@ func addNewEventToDb(w http.ResponseWriter, r *http.Request) {
 		Date:     parsedDate,
 	}
 
-	//Insert into Postgres DB.
-	newID, err := addEvent(newEvent)
-	if err != nil {
-		//Error here should be injected into a reloaded form.
-		println("AddEvent Error Handler")
-		println(err.Error())
+	if errorMessage == "" {
+		//Insert into Postgres DB.
+		newID, err := addEvent(newEvent)
+		if err != nil {
+			//Error here should be injected into a reloaded form.
+			tmpl["create"].Execute(w, "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported")
+			println(err.Error())
+			return
+		}
+		tmpl["post-creation"].Execute(w, newID)
 		return
 	}
+	errorMessage = errorMessage + " Please try again!"
+	tmpl["create"].Execute(w, errorMessage)
 
 	//If all else is good, the Event with ID = newID is displayed
-	tmpl["post-creation"].Execute(w, newID)
 
 }
