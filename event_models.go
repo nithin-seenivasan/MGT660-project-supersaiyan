@@ -56,13 +56,15 @@ func getAllEvents() ([]Event, error) {
 
 func addEvent(event Event) (int, error) {
 	insertStatement := `
-		INSERT INTO events (title, location, image, date)
+		INSERT INTO events (title, location, image, date)		
 		VALUES ($1, $2, $3, $4)
 		RETURNING id;
 	`
-	// Use the global db object
+	//('1', '2022-10-17 16:30:00', 'http://i.imgur.com/pXjrQ.gif', 'SOM House Party', 'Kyle''s house')
+	// Use the global db object -- VALUES ($1, $2, $3, $4)
 	newID := 0
 	err := db.QueryRow(insertStatement, event.Title, event.Location, event.Image, event.Date).Scan(&newID)
+	//err := db.QueryRow(insertStatement).Scan(&newID)
 	return newID, err
 }
 
