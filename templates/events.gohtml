@@ -1,12 +1,39 @@
 {{template "layout" .}}
 
 {{define "title"}}
-	My eventbrite clone
+	{{.Event.Title}}
 {{end}}
 
 {{define "content"}}
-<h1 class="title">Class project starter</h1>
+<h1 class="title">{{.Event.Title}}</h1>
 <p>
-	Here's the page where the events will populate
+	{{.Event.Location}}
+</p>
+<p>
+	<a href="/events/{{.Event.ID}}/donate">
+		Want to support?
+	</a>
+</p>
+<p>
+<time>
+	{{.Event.Date}}
+</time>
+</p>
+<p>
+<ul>
+	{{range .Rsvp_data}}
+		<li>{{.}}</li>
+	{{end}}
+</ul>
+</p>
+<p>
+<img src="{{.Event.Image}}" alt="event image">
+</p>
+<p>RSVP form:</p>
+<p>
+	<form method="POST">
+		<input type="email" name="email">
+		<input type="submit">
+	</form>
 </p>
 {{end}}
