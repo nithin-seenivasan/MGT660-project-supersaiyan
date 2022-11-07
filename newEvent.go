@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -56,9 +57,12 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 			tmpl["create"].Execute(w, "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported")
 			return
 		}
-		tmpl["post-creation"].Execute(w, newID)
+		//Redirect to the events/{ID} page, on successful entry into DB
+		var redirectURL string = "/events/" + strconv.Itoa(newID)
+		http.Redirect(w, r, redirectURL, http.StatusFound)
 		return
 	}
+	//Else if Error -
 	errorMessage = errorMessage + " Please try again!"
 
 	//Display the create page with the concatenated error Message (containing aggregate of all error messages)
