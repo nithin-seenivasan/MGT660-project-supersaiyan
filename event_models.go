@@ -56,11 +56,10 @@ func getAllEvents() ([]Event, error) {
 
 func addEvent(event Event) (int, error) {
 	insertStatement := `
-		INSERT INTO events (title, location, image, date)
+		INSERT INTO events (title, location, image, date)		
 		VALUES ($1, $2, $3, $4)
 		RETURNING id;
 	`
-	// Use the global db object
 	newID := 0
 	err := db.QueryRow(insertStatement, event.Title, event.Location, event.Image, event.Date).Scan(&newID)
 	return newID, err

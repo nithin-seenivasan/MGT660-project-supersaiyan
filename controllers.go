@@ -64,6 +64,5 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
-
-	tmpl["create"].Execute(w, "nothing")
+	tmpl["create"].Execute(w, "")
 }
