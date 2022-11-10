@@ -9,10 +9,11 @@ import (
 )
 
 func apiEventListController(w http.ResponseWriter, r *http.Request) {
-	type apiresponse struct {
+	type apiResponse struct {
 		Events []Event `json:"events"`
 	}
-	a := apiresponse{Events: allEvents}
+	allEvents, err := getAllEvents()
+	a := apiResponse{Events: allEvents}
 	json, err := json.Marshal(a)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
