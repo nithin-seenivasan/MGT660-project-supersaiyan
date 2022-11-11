@@ -2,9 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
-	"os"
 	"path"
 	"strconv"
 	"time"
@@ -40,8 +38,8 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 
 	fetch_id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if errors.Is(err, strconv.ErrSyntax) {
-		fmt.Println("Error 404 page does not exist")
-		os.Exit(1)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
 	}
 
 	type EventContextData struct {
@@ -51,13 +49,19 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 
 	Requested_Event, err := getEventByID(fetch_id)
 	if err != nil {
-		http.Error(w, "database error", http.StatusInternalServerError)
+		http.Error(w, "database error 1", http.StatusInternalServerError)
 		return
 	}
 
+	RSVP_List, err := getRSVPByID(fetch_id)
+	// if err != nil {
+	// 	http.Error(w, "database error", http.StatusInternalServerError)
+	// 	return
+	// }
+
 	contextData := EventContextData{
 		Event:     Requested_Event,
-		Rsvp_data: []string{"dummyemail1@yale.edu", "dummyemail2@gmail.com"},
+		Rsvp_data: RSVP_List,
 	}
 
 	tmpl["events"].Execute(w, contextData)
@@ -65,4 +69,34 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 
 func createController(w http.ResponseWriter, r *http.Request) {
 	tmpl["create"].Execute(w, "")
+}
+
+func addrsvpController(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Bad email address", http.StatusBadRequest)
+		return
+	}
+	email_address := r.FormValue("email")
+
+	event_id, err := strconv.Atoi(path.Base(r.URL.Path))
+	if errors.Is(err, strconv.ErrSyntax) {
+		http.Error(w, "Bad event ID", http.StatusBadRequest)
+		return
+	}
+
+	rsvpData := Rsvp{
+		Event_ID:      event_id,
+		Email_address: email_address,
+	}
+
+	database_err := addRSVP(rsvpData)
+	if database_err != nil {
+		//Error here comes from the INSERT SQL statement - display the following message
+		tmpl["create"].Execute(w, "This is a Yale exclusive event. Please enter a @yale.edu email address only")
+		return
+	}
+
+	var redirectURL string = "/events/" + strconv.Itoa(event_id)
+	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
