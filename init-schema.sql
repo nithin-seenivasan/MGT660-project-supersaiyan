@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS events (
     date TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
-ALTER TABLE events DROP CONSTRAINT title ;
+-- ALTER TABLE events DROP CONSTRAINT title ;
 
 -- "Upsert" our default events. This will overwrite your
 -- default events every time this code is run.
