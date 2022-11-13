@@ -122,9 +122,9 @@ func TestAddEventValid(t *testing.T) {
 	}
 
 	testEvent := Event{
-		Title:    "Party In New Haven",
-		Location: "New Haven",
-		Image:    "https://i.imgur.com/l3aFizL.jpeg",
+		Title:    "Unit Test created this event :)",
+		Location: "In the Matrix",
+		Image:    "https://i.imgur.com/fZBreBJ.jpeg",
 		Date:     testDate,
 	}
 
