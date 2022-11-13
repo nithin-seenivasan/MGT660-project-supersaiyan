@@ -61,7 +61,7 @@ func TestAddEventLocation(t *testing.T) {
 
 	for _, event := range testEvents {
 		if got, err := addEvent(event); err != nil {
-			t.Errorf("Invalid Location - Not accepted in Database. Official error message: %q ||| Input Title: %q", err, event.Title)
+			t.Errorf("Invalid Location - Not accepted in Database. Official error message: %q ||| Input Title: %q", err, event.Location)
 		} else {
 			println(got)
 		}
@@ -106,7 +106,7 @@ func TestAddEventImage(t *testing.T) {
 
 	for _, event := range testEvents {
 		if got, err := addEvent(event); err != nil {
-			t.Errorf("Invalid Image Link - Not accepted in Database. Official error message: %q ||| Input Title: %q", err, event.Title)
+			t.Errorf("Invalid Image Link - Not accepted in Database. Official error message: %q ||| Input Title: %q", err, event.Image)
 		} else {
 			println(got)
 		}
