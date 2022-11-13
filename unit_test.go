@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Test to check if the database accepts an invalid Title
 func TestAddEventTitle(t *testing.T) {
 
 	testDate, err := time.Parse("2006-01-02T15:04", "2006-01-02T15:04")
@@ -25,6 +26,7 @@ func TestAddEventTitle(t *testing.T) {
 	}
 }
 
+// Test to check if the database accepts an invalid location
 func TestAddEventLocation(t *testing.T) {
 
 	testDate, err := time.Parse("2006-01-02T15:04", "2006-01-02T15:04")
@@ -45,6 +47,7 @@ func TestAddEventLocation(t *testing.T) {
 	}
 }
 
+// Test to check if the database accepts an invalid image
 func TestAddEventImage(t *testing.T) {
 
 	testDate, err := time.Parse("2006-01-02T15:04", "2006-01-02T15:04")
@@ -65,6 +68,7 @@ func TestAddEventImage(t *testing.T) {
 	}
 }
 
+// Test to check if the database accepts an valid Event
 func TestAddEventValid(t *testing.T) {
 
 	testDate, err := time.Parse("2006-01-02T15:04", "2006-01-02T15:04")
