@@ -3,9 +3,8 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"path"
 	"strconv"
-
-	"github.com/go-chi/chi"
 )
 
 func apiEventListController(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +23,8 @@ func apiEventListController(w http.ResponseWriter, r *http.Request) {
 }
 
 func apiEventDetailController(w http.ResponseWriter, r *http.Request) {
-	eventID, err := strconv.Atoi(chi.URLParam(r, "eventID"))
+
+	eventID, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
 		http.Error(w, "Bad event ID", http.StatusBadRequest)
 		return
