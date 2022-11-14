@@ -15,5 +15,5 @@ func init() {
 	tmpl["create"] = m(p("templates/create.gohtml", "templates/layout.gohtml"))
 	tmpl["post-creation"] = m(p("templates/post-creation.gohtml", "templates/layout.gohtml"))
 	tmpl["rsvp"] = m(p("templates/rsvp.gohtml", "templates/events.gohtml", "templates/layout.gohtml"))
-	tmpl["rsvp-error"] = m(p("templates/rsvp-error.gohtml", "templates/events/gohtml", "templates/layout.gohtml"))
+	tmpl["rsvp-error"] = m(p("templates/rsvp-error.gohtml", "templates/events.gohtml", "templates/layout.gohtml"))
 }
