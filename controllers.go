@@ -93,7 +93,7 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 	database_err := addRSVP(rsvpData)
 	if database_err != nil {
 		//Error here comes from the INSERT SQL statement - display the following message
-		tmpl["create"].Execute(w, "This is a Yale exclusive event. Please enter a @yale.edu email address only")
+		tmpl["events"].Execute(w, "This is a Yale exclusive event. Please enter a @yale.edu email address only")
 		return
 	}
 
