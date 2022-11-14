@@ -24,11 +24,11 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 
 	//Create a Error Message based on conditions
 	var errorMessage string
-	if len(title) < 2 {
+	if len(title) < 6 {
 		errorMessage = "Title is invalid!"
 	}
 
-	if len(location) < 2 {
+	if len(location) < 6 {
 		errorMessage = errorMessage + " Location is invalid!"
 	}
 
@@ -38,6 +38,14 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 	parsedDate, err := time.Parse("2006-01-02T15:04", date)
 	if err != nil {
 		errorMessage = errorMessage + " Date is invalid!"
+	}
+
+	//Compare dates
+	today := time.Now()
+	dateComparison := parsedDate.After(today)
+
+	if !dateComparison {
+		errorMessage = errorMessage + " Date is in the past!"
 	}
 
 	//Create a Event element with the new variables
