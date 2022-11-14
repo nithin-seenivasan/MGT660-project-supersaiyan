@@ -31,8 +31,8 @@
 </p>
 <p>RSVP form:</p>
 <p>
-	<form method="POST">
-		<input type="email" name="email">
+	<form action="/events/rsvp/{{.Event.ID}}" method="PUT">
+		<input type="text" name="email">
 		<input type="submit">
 	</form>
 </p>
