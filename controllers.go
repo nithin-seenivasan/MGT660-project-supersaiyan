@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"net/http"
 	"path"
@@ -34,6 +36,24 @@ func aboutController(w http.ResponseWriter, r *http.Request) {
 	tmpl["about"].Execute(w, "nothing")
 }
 
+func getEventData(w http.ResponseWriter, event_id int) EventContextData {
+
+	Requested_Event, err := getEventByID(event_id)
+	if err != nil {
+		http.Error(w, "Event not present", http.StatusInternalServerError)
+		return EventContextData{}
+	}
+
+	RSVP_List, err := getRSVPByID(event_id)
+
+	contextData := EventContextData{
+		Event:     Requested_Event,
+		Rsvp_data: RSVP_List,
+	}
+
+	return contextData
+}
+
 func eventsController(w http.ResponseWriter, r *http.Request) {
 
 	fetch_id, err := strconv.Atoi(path.Base(r.URL.Path))
@@ -42,29 +62,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type EventContextData struct {
-		Event     Event
-		Rsvp_data []string
-	}
-
-	Requested_Event, err := getEventByID(fetch_id)
-	if err != nil {
-		http.Error(w, "database error 1", http.StatusInternalServerError)
-		return
-	}
-
-	RSVP_List, err := getRSVPByID(fetch_id)
-	// if err != nil {
-	// 	http.Error(w, "database error", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	contextData := EventContextData{
-		Event:     Requested_Event,
-		Rsvp_data: RSVP_List,
-	}
-
-	tmpl["events"].Execute(w, contextData)
+	tmpl["events"].Execute(w, getEventData(w, fetch_id))
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
@@ -90,13 +88,36 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 		Email_address: email_address,
 	}
 
+	EventData := getEventData(w, event_id)
+
 	database_err := addRSVP(rsvpData)
 	if database_err != nil {
 		//Error here comes from the INSERT SQL statement - display the following message
-		tmpl["events"].Execute(w, "This is a Yale exclusive event. Please enter a @yale.edu email address only")
+		tmpl["rsvp_error"].Execute(w, EventData)
 		return
 	}
 
-	var redirectURL string = "/events/" + strconv.Itoa(event_id)
-	http.Redirect(w, r, redirectURL, http.StatusFound)
+	// var redirectURL string = "/events/" + strconv.Itoa(event_id)
+	// http.Redirect(w, r, redirectURL, http.StatusFound)
+	ByteCode := make([]byte, 6)
+	_, error := rand.Read(ByteCode)
+	Code := ""
+	if error != nil {
+		Code = "code not found"
+	} else {
+		Code = hex.EncodeToString(ByteCode)
+	}
+
+	type RSVPContextData struct {
+		Event     Event
+		RSVP_data []string
+		Code      string
+	}
+
+	contextData := RSVPContextData{
+		Event:     EventData.Event,
+		RSVP_data: EventData.Rsvp_data,
+		Code:      Code,
+	}
+	tmpl["rsvp"].Execute(w, contextData)
 }
