@@ -95,13 +95,14 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 		Email_address: email_address,
 	}
 
-	Requested_Event, RSVP_List := getEventData(w, event_id)
-
 	type ContextData struct {
 		Event     Event
 		Rsvp_data []string
 		Code      string
 	}
+
+	database_err := addRSVP(rsvpData)
+	Requested_Event, RSVP_List := getEventData(w, event_id)
 
 	EventContextData := ContextData{
 		Event:     Requested_Event,
@@ -109,7 +110,6 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 		Code:      "",
 	}
 
-	database_err := addRSVP(rsvpData)
 	if database_err != nil {
 		//Error here comes from the INSERT SQL statement - display the following message
 		tmpl["rsvp_error"].Execute(w, EventContextData)
