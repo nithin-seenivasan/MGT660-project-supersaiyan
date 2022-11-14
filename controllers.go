@@ -36,22 +36,17 @@ func aboutController(w http.ResponseWriter, r *http.Request) {
 	tmpl["about"].Execute(w, "nothing")
 }
 
-func getEventData(w http.ResponseWriter, event_id int) EventContextData {
+func getEventData(w http.ResponseWriter, event_id int) (Event, []string) {
 
 	Requested_Event, err := getEventByID(event_id)
 	if err != nil {
 		http.Error(w, "Event not present", http.StatusInternalServerError)
-		return EventContextData{}
+		return Event{}, []string{}
 	}
 
-	RSVP_List, err := getRSVPByID(event_id)
+	RSVP_List, _ := getRSVPByID(event_id)
 
-	contextData := EventContextData{
-		Event:     Requested_Event,
-		Rsvp_data: RSVP_List,
-	}
-
-	return contextData
+	return Requested_Event, RSVP_List
 }
 
 func eventsController(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +57,19 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl["events"].Execute(w, getEventData(w, fetch_id))
+	Requested_Event, RSVP_List := getEventData(w, fetch_id)
+
+	type ContextData struct {
+		Event     Event
+		Rsvp_data []string
+	}
+
+	EventContextData := ContextData{
+		Event:     Requested_Event,
+		Rsvp_data: RSVP_List,
+	}
+
+	tmpl["events"].Execute(w, EventContextData)
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
@@ -88,12 +95,24 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 		Email_address: email_address,
 	}
 
-	EventData := getEventData(w, event_id)
+	Requested_Event, RSVP_List := getEventData(w, event_id)
+
+	type ContextData struct {
+		Event     Event
+		Rsvp_data []string
+		Code      string
+	}
+
+	EventContextData := ContextData{
+		Event:     Requested_Event,
+		Rsvp_data: RSVP_List,
+		Code:      "",
+	}
 
 	database_err := addRSVP(rsvpData)
 	if database_err != nil {
 		//Error here comes from the INSERT SQL statement - display the following message
-		tmpl["rsvp_error"].Execute(w, EventData)
+		tmpl["rsvp_error"].Execute(w, EventContextData)
 		return
 	}
 
@@ -108,16 +127,10 @@ func addrsvpController(w http.ResponseWriter, r *http.Request) {
 		Code = hex.EncodeToString(ByteCode)
 	}
 
-	type RSVPContextData struct {
-		Event     Event
-		RSVP_data []string
-		Code      string
-	}
-
-	contextData := RSVPContextData{
-		Event:     EventData.Event,
-		RSVP_data: EventData.Rsvp_data,
+	RSVP_ContextData := ContextData{
+		Event:     Requested_Event,
+		Rsvp_data: RSVP_List,
 		Code:      Code,
 	}
-	tmpl["rsvp"].Execute(w, contextData)
+	tmpl["rsvp"].Execute(w, RSVP_ContextData)
 }

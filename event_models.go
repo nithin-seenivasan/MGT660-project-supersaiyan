@@ -28,6 +28,11 @@ type Rsvp struct {
 	Email_address string `json:"email"`
 }
 
+type EventContextData struct {
+	Event     Event
+	Rsvp_data []string
+}
+
 // getEventByID - returns the event that has the
 // specified id and an error if there was a database err.
 func getEventByID(id int) (Event, error) {
