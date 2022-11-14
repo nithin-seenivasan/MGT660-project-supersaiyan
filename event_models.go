@@ -23,11 +23,6 @@ type Event struct {
 	Attending []string  `json:"attending"`
 }
 
-type Rsvp struct {
-	Event_ID      int    `json:"eventid"`
-	Email_address string `json:"email"`
-}
-
 // getEventByID - returns the event that has the
 // specified id and an error if there was a database err.
 func getEventByID(id int) (Event, error) {
@@ -68,34 +63,6 @@ func addEvent(event Event) (int, error) {
 	newID := 0
 	err := db.QueryRow(insertStatement, event.Title, event.Location, event.Image, event.Date).Scan(&newID)
 	return newID, err
-}
-
-func addRSVP(rsvp_data Rsvp) error {
-	insertStatement := `
-		INSERT INTO rsvp (event_id, email_address)		
-		VALUES ($1, $2);
-	`
-	_, err := db.Exec(insertStatement, rsvp_data.Event_ID, rsvp_data.Email_address)
-	return err
-}
-
-func getRSVPByID(id int) ([]string, error) {
-	rsvp_list := []string{}
-	query := `SELECT email_address FROM rsvp WHERE event_id=$1`
-	rows, err := db.Query(query, id)
-	if err != nil {
-		return rsvp_list, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var e string
-		err := rows.Scan(&e)
-		if err != nil {
-			return rsvp_list, err
-		}
-		rsvp_list = append(rsvp_list, e)
-	}
-	return rsvp_list, nil
 }
 
 //go:embed init-schema.sql
