@@ -14,11 +14,19 @@
 		Want to support?
 	</a>
 </p>
+
 <p>
 <time>
 	{{.Event.Date}}
 </time>
 </p>
+
+{{ if .Confirmation_Code }}
+<p> Your confirmation code is {{.Confirmation_Code}} </p>
+{{end}}
+{{ if .Errors }}
+<p class="errors"> {{.Errors}} </p>
+{{end}}
 <p>
 <ul>
 	{{range .Rsvp_data}}
@@ -31,8 +39,8 @@
 </p>
 <p>RSVP form:</p>
 <p>
-	<form action="/events/rsvp/{{.Event.ID}}" method="PUT">
-		<input type="text" name="email">
+	<form action="/events/{{.Event.ID}}" method="POST">
+		<input type="email" name="email">
 		<input type="submit">
 	</form>
 </p>
