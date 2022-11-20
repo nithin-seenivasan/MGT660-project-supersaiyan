@@ -28,6 +28,13 @@ type Rsvp struct {
 	Email_address string `json:"email"`
 }
 
+type EventContextData struct {
+	Event             Event
+	Rsvp_data         []string
+	Confirmation_Code string
+	Errors            string
+}
+
 // getEventByID - returns the event that has the
 // specified id and an error if there was a database err.
 func getEventByID(id int) (Event, error) {
@@ -70,13 +77,15 @@ func addEvent(event Event) (int, error) {
 	return newID, err
 }
 
-func addRSVP(rsvp_data Rsvp) error {
+func addRSVP(rsvp_data Rsvp) (string, error) {
 	insertStatement := `
 		INSERT INTO rsvp (event_id, email_address)		
-		VALUES ($1, $2);
+		VALUES ($1, $2)
+		RETURNING confirmation_code;
 	`
-	_, err := db.Exec(insertStatement, rsvp_data.Event_ID, rsvp_data.Email_address)
-	return err
+	code := "00000"
+	err := db.QueryRow(insertStatement, rsvp_data.Event_ID, rsvp_data.Email_address).Scan(&code)
+	return code, err
 }
 
 func getRSVPByID(id int) ([]string, error) {

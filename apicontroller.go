@@ -11,7 +11,7 @@ func apiEventListController(w http.ResponseWriter, r *http.Request) {
 	type apiResponse struct {
 		Events []Event `json:"events"`
 	}
-	allEvents, err := getAllEvents()
+	allEvents, _ := getAllEvents()
 	a := apiResponse{Events: allEvents}
 	json, err := json.Marshal(a)
 	if err != nil {
