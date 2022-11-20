@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS rsvp (
     event_id INT REFERENCES events(id),
     email_address TEXT NOT NULL
         CHECK (email_address ~ '^[a-zA-Z0-9_\-\.]+@yale\.edu$'),
-    confirmation_code text GENERATED ALWAYS AS (encode(sha256(email_address)::bytea,'hex')) STORED,
+    confirmation_code text GENERATED ALWAYS AS (encode(digest(email_address,'sha256')::bytea,'hex')) STORED,
     CONSTRAINT unique_rsvp PRIMARY KEY (event_id, email_address)
 );
 
