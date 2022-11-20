@@ -65,7 +65,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 			ContextData := setupEventContextData(w, event_id, "", errors)
 			tmpl["events"].Execute(w, ContextData)
 		} else {
-			ContextData := setupEventContextData(w, event_id, confirmation_code[:6], "")
+			ContextData := setupEventContextData(w, event_id, confirmation_code[:7], "")
 			tmpl["events"].Execute(w, ContextData)
 		}
 
