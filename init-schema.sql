@@ -49,3 +49,9 @@ SET (id, date, image, title, location) = (EXCLUDED.id, EXCLUDED.date, EXCLUDED.i
 
 -- Reset the id sequence because we did some manual insertions.
 SELECT setval('events_id_seq', (SELECT MAX(id)+1 FROM events));
+
+INSERT INTO rsvp (event_id, email_address) VALUES
+('1', 'kim.kardashian@yale.edu'),
+('2', 'kim.kardashian@yale.edu'),
+('3', 'kim.kardashain@yale.edu'),
+('4', 'kim.kardashian@yale.edu')

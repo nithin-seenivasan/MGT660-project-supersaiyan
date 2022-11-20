@@ -65,6 +65,16 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 			tmpl["create"].Execute(w, "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported")
 			return
 		}
+		//Insert Kim Kardashian as default attendee
+		rsvp_data := Rsvp{
+			Event_ID:      newID,
+			Email_address: "kim.kardashian@yale.edu",
+		}
+		_, rsvp_error := addRSVP(rsvp_data)
+		if rsvp_error != nil {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
 		//Redirect to the events/{ID} page, on successful entry into DB
 		var redirectURL string = "/events/" + strconv.Itoa(newID)
 		http.Redirect(w, r, redirectURL, http.StatusFound)
