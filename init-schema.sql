@@ -53,7 +53,7 @@ SELECT setval('events_id_seq', (SELECT MAX(id)+1 FROM events));
 INSERT INTO rsvp (event_id, email_address) VALUES
 ('1', 'kim.kardashian@yale.edu'),
 ('2', 'kim.kardashian@yale.edu'),
-('3', 'kim.kardashain@yale.edu'),
+('3', 'kim.kardashian@yale.edu'),
 ('4', 'kim.kardashian@yale.edu')
 ON CONFLICT DO NOTHING -- Added this, since the schema tries to write this every single time into RSVP
 -- Since primary key is set to "unique_rsvp PRIMARY KEY (event_id, email_address)", having duplicate values violates the constraint
