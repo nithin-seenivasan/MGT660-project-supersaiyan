@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS events (
 -- Alter if it already exists (make changes to the DB constraints here)
 ALTER TABLE IF EXISTS events
     DROP CONSTRAINT IF EXISTS title,
-    ADD  CONSTRAINT title CHECK (char_length(title) < 51 AND char_length(title)>5 ), 
+    ADD  CONSTRAINT title CHECK (char_length(title) < 50 AND char_length(title)>5 ), 
     DROP CONSTRAINT IF EXISTS location,
-    ADD  CONSTRAINT location CHECK (char_length(location) < 51 AND char_length(location)>5),
+    ADD  CONSTRAINT location CHECK (char_length(location) < 50 AND char_length(location)>5),
     DROP CONSTRAINT IF EXISTS image, 
-    ADD  CONSTRAINT image CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$' AND char_length(image) < 51 AND char_length(image)>5);
+    ADD  CONSTRAINT image CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$');
 
 
 CREATE TABLE IF NOT EXISTS rsvp (

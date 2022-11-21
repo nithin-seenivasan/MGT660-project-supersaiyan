@@ -64,7 +64,9 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 		newID, err := addEvent(newEvent)
 		if err != nil {
 			//Error here comes from the INSERT SQL statement - display the following message
-			tmpl["create-error"].Execute(w, "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported")
+			errorMessage = "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported"
+			var redirectURL string = "/events/new"
+			http.Redirect(w, r, redirectURL, http.StatusFound)
 			return
 		}
 		//Insert Kim Kardashian as default attendee
