@@ -2,8 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
-
 	"os"
 	"time"
 
@@ -39,7 +37,7 @@ type EventContextData struct {
 
 // getEventByID - returns the event that has the
 // specified id and an error if there was a database err.
-func getEventByID(id int, w http.ResponseWriter) (Event, error) {
+func getEventByID(id int) (Event, error) {
 	var e Event
 	query := `SELECT id,title,location,image,date FROM events WHERE id=$1`
 	row := db.QueryRow(query, id)
@@ -54,7 +52,7 @@ func getEventByID(id int, w http.ResponseWriter) (Event, error) {
 
 // getAllEvents - returns a slice of all events and an
 // error in case of database error.
-func getAllEvents(w http.ResponseWriter) ([]Event, error) {
+func getAllEvents() ([]Event, error) {
 	var events []Event
 	query := `SELECT id,title,location,image,date FROM events`
 	rows, err := db.Query(query)
@@ -62,7 +60,6 @@ func getAllEvents(w http.ResponseWriter) ([]Event, error) {
 		return events, err
 	}
 	defer rows.Close()
-	var contextData EventContextData //Declaring the variable to get the RSVP data back
 	for rows.Next() {
 		var e Event
 		err := rows.Scan(&e.ID, &e.Title, &e.Location, &e.Image, &e.Date)
@@ -74,8 +71,8 @@ func getAllEvents(w http.ResponseWriter) ([]Event, error) {
 		//for each event ID in events, search rsvp for all attending and add it to events.attanding
 		//Just made use of Bala's function, and linked it to Mike's already created API functions
 		//This bit of code acts like a bridge between those two
-		contextData = setupEventContextData(w, e.ID, "", "")
-		e.Attending = contextData.Rsvp_data
+		RSVP_List, _ := getRSVPByID(e.ID)
+		e.Attending = RSVP_List
 
 		events = append(events, e)
 	}

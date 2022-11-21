@@ -11,7 +11,7 @@ func apiEventListController(w http.ResponseWriter, r *http.Request) {
 	type apiResponse struct {
 		Events []Event `json:"events"`
 	}
-	allEvents, _ := getAllEvents(w)
+	allEvents, _ := getAllEvents()
 	a := apiResponse{Events: allEvents}
 	json, err := json.Marshal(a)
 	if err != nil {
@@ -29,7 +29,7 @@ func apiEventDetailController(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad event ID", http.StatusBadRequest)
 		return
 	}
-	event, wasFound := getEventByID(eventID, w)
+	event, wasFound := getEventByID(eventID)
 	if wasFound != nil {
 		http.Error(w, "No such Event", http.StatusNotFound)
 		return

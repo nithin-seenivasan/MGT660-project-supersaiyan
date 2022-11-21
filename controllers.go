@@ -15,7 +15,7 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 		Today  time.Time
 	}
 
-	theEvents, err := getAllEvents(w)
+	theEvents, err := getAllEvents()
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		return
@@ -89,7 +89,7 @@ func createController(w http.ResponseWriter, r *http.Request) {
 
 func setupEventContextData(w http.ResponseWriter, event_id int, confirmation_code string, errors string) EventContextData {
 
-	Requested_Event, err := getEventByID(event_id, w)
+	Requested_Event, err := getEventByID(event_id)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		return EventContextData{}
