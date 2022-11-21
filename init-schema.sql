@@ -55,3 +55,5 @@ INSERT INTO rsvp (event_id, email_address) VALUES
 ('2', 'kim.kardashian@yale.edu'),
 ('3', 'kim.kardashain@yale.edu'),
 ('4', 'kim.kardashian@yale.edu')
+ON CONFLICT DO NOTHING -- Added this, since the schema tries to write this every single time into RSVP
+-- Since primary key is set to "unique_rsvp PRIMARY KEY (event_id, email_address)", having duplicate values violates the constraint
