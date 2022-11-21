@@ -5,12 +5,14 @@
 {{end}}
 
 {{define "content"}}
+<script src="../static/scripts.js"></script>
 <h1 class="title">Event Creation Page</h1>
-<p>
+<p id = "test">
 	Here's the page where users can create events
 </p>
+
 <p>RSVP form:</p>
-<form action ="/events/new-event-created" id="createEventForm" form method="PUT">
+<form action ="/events/new-event-created" id="createEventForm" form method="POST">
 	<label for="title">Title</label>
 	<br>
 	<input type="text" name="title">
@@ -31,5 +33,20 @@
 	<br>
 	<br>
 </form>
+ <!--
+<section>
+	<p>RSVP form:</p>
+	<form method="POST">
+		<label for="title">Title</label>
+		<input type="text" name="title">
+		<label for="location">Location</label>
+		<input type="text" name="location">
+		<label for="image">Image URL</label>
+		<input type="url" name="image">
+		<label for="date">Date of event</label>
+		<input type="datetime-local" name="date" placeholder="YYYY-MM-DDTHH:MM">
+		<input type="submit" onclick="myFunction()">
+	</form>
+</section> -->
 
 {{end}}

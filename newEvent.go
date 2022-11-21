@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -8,11 +9,11 @@ import (
 
 var errorMessage string //global variable
 func addNewEventController(w http.ResponseWriter, r *http.Request) {
-
 	// The submit button links to /events/new-event-created, which is rendered by routes.go to come HERE.
 	// Extract the form's POST variables here. (see the YT video). Write to DB. Then IF all is OK, do this below
 	err := r.ParseForm()
 	if err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
