@@ -2,9 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
-	"os"
 	"path"
 	"strconv"
 	"time"
@@ -38,31 +36,73 @@ func aboutController(w http.ResponseWriter, r *http.Request) {
 
 func eventsController(w http.ResponseWriter, r *http.Request) {
 
-	fetch_id, err := strconv.Atoi(path.Base(r.URL.Path))
+	event_id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if errors.Is(err, strconv.ErrSyntax) {
-		fmt.Println("Error 404 page does not exist")
-		os.Exit(1)
-	}
-
-	type EventContextData struct {
-		Event     Event
-		Rsvp_data []string
-	}
-
-	Requested_Event, err := getEventByID(fetch_id)
-	if err != nil {
-		http.Error(w, "database error", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
-	contextData := EventContextData{
-		Event:     Requested_Event,
-		Rsvp_data: []string{"dummyemail1@yale.edu", "dummyemail2@gmail.com"},
+	if r.Method == http.MethodPost {
+
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, "Bad email address", http.StatusBadRequest)
+			return
+		}
+
+		email_address := r.FormValue("email")
+
+		rsvpData := Rsvp{
+			Event_ID:      event_id,
+			Email_address: email_address,
+		}
+
+		confirmation_code, database_err := addRSVP(rsvpData)
+
+		if database_err != nil {
+			//Error here comes from the INSERT SQL statement - display the following message
+			errors := "This is a Yale exclusive event. Please enter a @yale.edu email address only"
+			ContextData := setupEventContextData(w, event_id, "", errors)
+			tmpl["events"].Execute(w, ContextData)
+		} else {
+			ContextData := setupEventContextData(w, event_id, confirmation_code[:7], "")
+			tmpl["events"].Execute(w, ContextData)
+		}
+
+	} else {
+		contextData := setupEventContextData(w, event_id, "", "")
+		tmpl["events"].Execute(w, contextData)
 	}
 
-	tmpl["events"].Execute(w, contextData)
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
-	tmpl["create"].Execute(w, "")
+	if errorMessage != "" {
+		//Display the create page with the concatenated error Message (containing aggregate of all error messages)
+		tmpl["create-error"].Execute(w, errorMessage)
+		errorMessage = ""
+	} else {
+		tmpl["create"].Execute(w, "")
+	}
+
+}
+
+func setupEventContextData(w http.ResponseWriter, event_id int, confirmation_code string, errors string) EventContextData {
+
+	Requested_Event, err := getEventByID(event_id)
+	if err != nil {
+		http.Error(w, "database error", http.StatusInternalServerError)
+		return EventContextData{}
+	}
+
+	RSVP_List, _ := getRSVPByID(event_id)
+
+	contextData := EventContextData{
+		Event:             Requested_Event,
+		Rsvp_data:         RSVP_List,
+		Confirmation_Code: confirmation_code,
+		Errors:            errors,
+	}
+
+	return contextData
 }
