@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS events (
 -- Alter if it already exists (make changes to the DB constraints here)
 ALTER TABLE IF EXISTS events
     DROP CONSTRAINT IF EXISTS title,
-    ADD  CONSTRAINT title CHECK (char_length(title) < 51 AND char_length(title)>5 ), 
+    ADD  CONSTRAINT title CHECK (char_length(title) < 50 AND char_length(title)>5 ), 
     DROP CONSTRAINT IF EXISTS location,
-    ADD  CONSTRAINT location CHECK (char_length(location) < 51 AND char_length(location)>5),
+    ADD  CONSTRAINT location CHECK (char_length(location) < 50 AND char_length(location)>5),
     DROP CONSTRAINT IF EXISTS image, 
-    ADD  CONSTRAINT image CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$' AND char_length(image) < 51 AND char_length(image)>5);
+    ADD  CONSTRAINT image CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$');
 
 
 CREATE TABLE IF NOT EXISTS rsvp (
@@ -53,7 +53,8 @@ SELECT setval('events_id_seq', (SELECT MAX(id)+1 FROM events));
 INSERT INTO rsvp (event_id, email_address) VALUES
 ('1', 'kim.kardashian@yale.edu'),
 ('2', 'kim.kardashian@yale.edu'),
-('3', 'kim.kardashain@yale.edu'),
+('3', 'kim.kardashian@yale.edu'),
 ('4', 'kim.kardashian@yale.edu')
+
 ON CONFLICT ON CONSTRAINT unique_rsvp DO UPDATE --Excludes running this if the RSVP table already has the above values
 SET (event_id, email_address) = (EXCLUDED.event_id, EXCLUDED.email_address) 

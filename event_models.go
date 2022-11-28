@@ -42,6 +42,11 @@ func getEventByID(id int) (Event, error) {
 	query := `SELECT id,title,location,image,date FROM events WHERE id=$1`
 	row := db.QueryRow(query, id)
 	err := row.Scan(&e.ID, &e.Title, &e.Location, &e.Image, &e.Date)
+	//e.Attending = []string{"ABC", "DEF"}
+
+	RSVP_List, _ := getRSVPByID(e.ID)
+	e.Attending = RSVP_List
+
 	return e, err
 }
 
@@ -61,8 +66,17 @@ func getAllEvents() ([]Event, error) {
 		if err != nil {
 			return events, err
 		}
+
+		//Added this because the API was not sending RSVP data - just showing attending: "null"
+		//for each event ID in events, search rsvp for all attending and add it to events.attanding
+		//Just made use of Bala's function, and linked it to Mike's already created API functions
+		//This bit of code acts like a bridge between those two
+		RSVP_List, _ := getRSVPByID(e.ID)
+		e.Attending = RSVP_List
+
 		events = append(events, e)
 	}
+
 	return events, nil
 }
 
