@@ -77,7 +77,14 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 }
 
 func createController(w http.ResponseWriter, r *http.Request) {
-	tmpl["create"].Execute(w, "")
+	if errorMessage != "" {
+		//Display the create page with the concatenated error Message (containing aggregate of all error messages)
+		tmpl["create-error"].Execute(w, errorMessage)
+		errorMessage = ""
+	} else {
+		tmpl["create"].Execute(w, "")
+	}
+
 }
 
 func setupEventContextData(w http.ResponseWriter, event_id int, confirmation_code string, errors string) EventContextData {
