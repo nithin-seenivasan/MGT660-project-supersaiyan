@@ -79,7 +79,7 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 func createController(w http.ResponseWriter, r *http.Request) {
 	if errorMessage != "" {
 		//Display the create page with the concatenated error Message (containing aggregate of all error messages)
-		tmpl["create-error"].Execute(w, errorMessage)
+		tmpl["create"].Execute(w, errorMessage) //Changed to send it to same Create page - Bala's elegant solution used here - Error only shows IF errorMessage != empty
 		errorMessage = ""
 	} else {
 		tmpl["create"].Execute(w, "")
