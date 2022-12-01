@@ -75,14 +75,7 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 			Email_address: "kim.kardashian@yale.edu",
 		}
 		_, rsvp_error := addRSVP(rsvp_data)
-
-		rsvp_data2 := Rsvp{
-			Event_ID:      newID,
-			Email_address: "kyle.jensen@yale.edu",
-		}
-		_, rsvp_error2 := addRSVP(rsvp_data2)
-
-		if rsvp_error != nil || rsvp_error2 != nil {
+		if rsvp_error != nil {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}

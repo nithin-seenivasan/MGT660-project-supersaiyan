@@ -54,11 +54,7 @@ INSERT INTO rsvp (event_id, email_address) VALUES
 ('1', 'kim.kardashian@yale.edu'),
 ('2', 'kim.kardashian@yale.edu'),
 ('3', 'kim.kardashian@yale.edu'),
-('4', 'kim.kardashian@yale.edu'),
-('1', 'kyle.jensen@yale.edu'),
-('2', 'kyle.jensen@yale.edu'),
-('3', 'kyle.jensen@yale.edu'),
-('4', 'kyle.jensen@yale.edu')
+('4', 'kim.kardashian@yale.edu')
 
 ON CONFLICT ON CONSTRAINT unique_rsvp DO UPDATE --Excludes running this if the RSVP table already has the above values
 SET (event_id, email_address) = (EXCLUDED.event_id, EXCLUDED.email_address) 
