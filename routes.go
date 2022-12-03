@@ -21,5 +21,6 @@ func createRoutes() chi.Router {
 	r.Get("/api/events", apiEventListController)
 	r.Get("/api/events/{event_id}", apiEventDetailController)
 	addStaticFileServer(r, "/static/", "staticfiles")
+	r.Get("/events/{event_id:[0-9]+/donate}", donateController)
 	return r
 }
