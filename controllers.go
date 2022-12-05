@@ -106,3 +106,8 @@ func setupEventContextData(w http.ResponseWriter, event_id int, confirmation_cod
 
 	return contextData
 }
+
+func donateController(w http.ResponseWriter, r *http.Request) {
+
+	tmpl["donate"].Execute(w, "nothing")
+}
