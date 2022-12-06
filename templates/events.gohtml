@@ -5,12 +5,13 @@
 {{end}}
 
 {{define "content"}}
+<script src="https://www.googleoptimize.com/optimize.js?id=OPT-TDFDVDM"></script>
 <h1 class="title">{{.Event.Title}}</h1>
 <p>
 	{{.Event.Location}}
 </p>
 <p>
-	<a href="/events/{{.Event.ID}}/donate">
+	<a href="/events/{{.Event.ID}}/donate" id="support-link" class="support">
 		Want to support?
 	</a>
 </p>
@@ -22,10 +23,10 @@
 </p>
 
 {{ if .Confirmation_Code }}
-<p> Your confirmation code is {{.Confirmation_Code}} </p>
+	<p> Your confirmation code is {{.Confirmation_Code}} </p>
 {{end}}
 {{ if .Errors }}
-<p class="errors"> {{.Errors}} </p>
+	<p class="errors"> {{.Errors}} </p>
 {{end}}
 <p>
 <ul>
@@ -35,7 +36,7 @@
 </ul>
 </p>
 <p>
-<img src="{{.Event.Image}}" alt="event image">
+	<img src="{{.Event.Image}}" alt="event image">
 </p>
 <p>RSVP form:</p>
 <p>

@@ -5,11 +5,15 @@
 {{end}}
 
 {{define "content"}}
-<script src="../static/scripts.js"></script>
+
 <h1 class="title">Event Creation Page</h1>
-<p id = "test">
+<p>
 	Here's the page where users can create events
 </p>
+
+{{ if .}}
+<p class="errors"> {{.}} </p>
+{{end}}
 
 <p>RSVP form:</p>
 <form action ="/events/new-event-created" id="createEventForm" form method="POST">
