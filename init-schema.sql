@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS events (
     location TEXT NOT NULL
         CHECK (char_length(location) < 51 AND char_length(location)>5),
     image TEXT NOT NULL
-        CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$' AND char_length(image) < 51 AND char_length(image)>5),
+        CHECK (image ~ '^https?://' AND image ~ '\.(png|jpg|jpeg|gif|gifv)$'),
     date TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
