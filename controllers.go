@@ -42,6 +42,8 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	contextData := setupEventContextData(w, eventID, "", "")
+
 	if r.Method == http.MethodPost {
 
 		err := r.ParseForm()
@@ -58,24 +60,24 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 		}
 
 		confirmationCode, databaseErr := addRSVP(rsvpData)
+		errors := ""
+		if confirmationCode != "" {
+			confirmationCode = confirmationCode[:7]
+		}
 
 		if databaseErr != nil {
 			//Error here comes from the INSERT SQL statement - display the following message
-			errors := "This is a Yale exclusive event. Please enter a @yale.edu email address only"
-			ContextData := setupEventContextData(w, eventID, "", errors)
-			tmpl["events"].Execute(w, ContextData)
-		} else {
-			ContextData := setupEventContextData(w, eventID, confirmationCode[:7], "")
-			tmpl["events"].Execute(w, ContextData)
+			errors = "This is a Yale exclusive event. Please enter a @yale.edu email address only"
 		}
 
-	} else {
-		contextData := setupEventContextData(w, eventID, "", "")
-		tmpl["events"].Execute(w, contextData)
+		contextData = setupEventContextData(w, eventID, confirmationCode, errors)
+
 	}
 
+	tmpl["events"].Execute(w, contextData)
 }
 
+// BVK - this function shouldn't exist
 func createController(w http.ResponseWriter, r *http.Request) {
 	if errorMessage != "" {
 		//Display the create page with the concatenated error Message (containing aggregate of all error messages)
@@ -85,26 +87,6 @@ func createController(w http.ResponseWriter, r *http.Request) {
 		tmpl["create"].Execute(w, "")
 	}
 
-}
-
-func setupEventContextData(w http.ResponseWriter, eventID int, confirmationCode string, errors string) EventContextData {
-
-	requestedEvent, err := getEventByID(eventID)
-	if err != nil {
-		http.Error(w, "database error", http.StatusInternalServerError)
-		return EventContextData{}
-	}
-
-	RSVPList, _ := getRSVPByID(eventID)
-
-	contextData := EventContextData{
-		Event:            requestedEvent,
-		RsvpData:         RSVPList,
-		ConfirmationCode: confirmationCode,
-		Errors:           errors,
-	}
-
-	return contextData
 }
 
 func donateController(w http.ResponseWriter, r *http.Request) {

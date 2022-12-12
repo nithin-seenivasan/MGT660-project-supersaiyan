@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -103,7 +104,7 @@ func addRSVP(RsvpData Rsvp) (string, error) {
 		VALUES ($1, $2)
 		RETURNING confirmation_code;
 	`
-	code := "00000"
+	code := ""
 	err := db.QueryRow(insertStatement, RsvpData.EventID, RsvpData.EmailAddress).Scan(&code)
 	return code, err
 }
@@ -127,6 +128,26 @@ func getRSVPByID(id int) ([]string, error) {
 		rsvpList = append(rsvpList, e)
 	}
 	return rsvpList, nil
+}
+
+func setupEventContextData(w http.ResponseWriter, eventID int, confirmationCode string, errors string) EventContextData {
+
+	requestedEvent, err := getEventByID(eventID)
+	if err != nil {
+		http.Error(w, "database error", http.StatusInternalServerError)
+		return EventContextData{}
+	}
+
+	RSVPList, _ := getRSVPByID(eventID)
+
+	contextData := EventContextData{
+		Event:            requestedEvent,
+		RsvpData:         RSVPList,
+		ConfirmationCode: confirmationCode,
+		Errors:           errors,
+	}
+
+	return contextData
 }
 
 //go:embed init-schema.sql
