@@ -36,7 +36,7 @@ func aboutController(w http.ResponseWriter, r *http.Request) {
 
 func eventsController(w http.ResponseWriter, r *http.Request) {
 
-	event_id, err := strconv.Atoi(path.Base(r.URL.Path))
+	eventID, err := strconv.Atoi(path.Base(r.URL.Path))
 	if errors.Is(err, strconv.ErrSyntax) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
@@ -50,27 +50,27 @@ func eventsController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		email_address := r.FormValue("email")
+		emailAddress := r.FormValue("email")
 
 		rsvpData := Rsvp{
-			Event_ID:      event_id,
-			Email_address: email_address,
+			EventID:      eventID,
+			EmailAddress: emailAddress,
 		}
 
-		confirmation_code, database_err := addRSVP(rsvpData)
+		confirmationCode, databaseErr := addRSVP(rsvpData)
 
-		if database_err != nil {
+		if databaseErr != nil {
 			//Error here comes from the INSERT SQL statement - display the following message
 			errors := "This is a Yale exclusive event. Please enter a @yale.edu email address only"
-			ContextData := setupEventContextData(w, event_id, "", errors)
+			ContextData := setupEventContextData(w, eventID, "", errors)
 			tmpl["events"].Execute(w, ContextData)
 		} else {
-			ContextData := setupEventContextData(w, event_id, confirmation_code[:7], "")
+			ContextData := setupEventContextData(w, eventID, confirmationCode[:7], "")
 			tmpl["events"].Execute(w, ContextData)
 		}
 
 	} else {
-		contextData := setupEventContextData(w, event_id, "", "")
+		contextData := setupEventContextData(w, eventID, "", "")
 		tmpl["events"].Execute(w, contextData)
 	}
 
@@ -87,21 +87,21 @@ func createController(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func setupEventContextData(w http.ResponseWriter, event_id int, confirmation_code string, errors string) EventContextData {
+func setupEventContextData(w http.ResponseWriter, eventID int, confirmationCode string, errors string) EventContextData {
 
-	Requested_Event, err := getEventByID(event_id)
+	requestedEvent, err := getEventByID(eventID)
 	if err != nil {
 		http.Error(w, "database error", http.StatusInternalServerError)
 		return EventContextData{}
 	}
 
-	RSVP_List, _ := getRSVPByID(event_id)
+	RSVPList, _ := getRSVPByID(eventID)
 
 	contextData := EventContextData{
-		Event:             Requested_Event,
-		Rsvp_data:         RSVP_List,
-		Confirmation_Code: confirmation_code,
-		Errors:            errors,
+		Event:            requestedEvent,
+		RsvpData:         RSVPList,
+		ConfirmationCode: confirmationCode,
+		Errors:           errors,
 	}
 
 	return contextData

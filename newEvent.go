@@ -70,19 +70,19 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//Insert Kim Kardashian as default attendee
-		rsvp_data := Rsvp{
-			Event_ID:      newID,
-			Email_address: "kim.kardashian@yale.edu",
+		rsvpData := Rsvp{
+			EventID:      newID,
+			EmailAddress: "kim.kardashian@yale.edu",
 		}
-		_, rsvp_error := addRSVP(rsvp_data)
+		_, rsvpError := addRSVP(rsvpData)
 
-		rsvp_data2 := Rsvp{
-			Event_ID:      newID,
-			Email_address: "kyle.jensen@yale.edu",
+		rsvpData2 := Rsvp{
+			EventID:      newID,
+			EmailAddress: "kyle.jensen@yale.edu",
 		}
-		_, rsvp_error2 := addRSVP(rsvp_data2)
+		_, rsvpError2 := addRSVP(rsvpData2)
 
-		if rsvp_error != nil || rsvp_error2 != nil {
+		if rsvpError != nil || rsvpError2 != nil {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
