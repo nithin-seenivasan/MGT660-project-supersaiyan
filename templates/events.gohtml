@@ -22,15 +22,15 @@
 </time>
 </p>
 
-{{ if .Confirmation_Code }}
-	<p> Your confirmation code is {{.Confirmation_Code}} </p>
+{{ if .ConfirmationCode }}
+	<p> Your confirmation code is {{.ConfirmationCode}} </p>
 {{end}}
 {{ if .Errors }}
 	<p class="errors"> {{.Errors}} </p>
 {{end}}
 <p>
 <ul>
-	{{range .Rsvp_data}}
+	{{range .RsvpData}}
 		<li>{{.}}</li>
 	{{end}}
 </ul>
