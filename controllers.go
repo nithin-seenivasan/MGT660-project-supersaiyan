@@ -123,8 +123,7 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			//Error here comes from the INSERT SQL statement - display the following message
 			errorMessage = "Unable to accept input. Please check the entered data. Note: only png|jpg|jpeg|gif|gifv images are supported"
-			var redirectURL string = "/events/new"
-			http.Redirect(w, r, redirectURL, http.StatusFound)
+			tmpl["create"].Execute(w, errorMessage)
 			return
 		}
 
