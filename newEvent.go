@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// BVK - This function ideally should be under controllers.go
 var errorMessage string //global variable
 func addNewEventController(w http.ResponseWriter, r *http.Request) {
 	// The submit button links to /events/new-event-created, which is rendered by routes.go to come HERE.
@@ -25,6 +26,7 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 	date := r.FormValue("date")
 
 	//Create a Error Message based on conditions
+	// BVK - move checking business logic to separate functions in event_models.go
 
 	if len(title) < 6 {
 		errorMessage = "Title is invalid!"
@@ -70,19 +72,20 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//Insert Kim Kardashian as default attendee
-		rsvp_data := Rsvp{
-			Event_ID:      newID,
-			Email_address: "kim.kardashian@yale.edu",
+		// BVK - Move setting up default events into another function and call it from here
+		rsvpData := Rsvp{
+			EventID:      newID,
+			EmailAddress: "kim.kardashian@yale.edu",
 		}
-		_, rsvp_error := addRSVP(rsvp_data)
+		_, rsvpError := addRSVP(rsvpData)
 
-		rsvp_data2 := Rsvp{
-			Event_ID:      newID,
-			Email_address: "kyle.jensen@yale.edu",
+		rsvpData2 := Rsvp{
+			EventID:      newID,
+			EmailAddress: "kyle.jensen@yale.edu",
 		}
-		_, rsvp_error2 := addRSVP(rsvp_data2)
+		_, rsvpError2 := addRSVP(rsvpData2)
 
-		if rsvp_error != nil || rsvp_error2 != nil {
+		if rsvpError != nil || rsvpError2 != nil {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
@@ -97,6 +100,8 @@ func addNewEventController(w http.ResponseWriter, r *http.Request) {
 	//Redirect back to events/new
 	var redirectURL string = "/events/new"
 	http.Redirect(w, r, redirectURL, http.StatusFound)
+
+	// BVK - remove commented code below
 
 	//Display the create page with the concatenated error Message (containing aggregate of all error messages)
 	//tmpl["create-error"].Execute(w, errorMessage)

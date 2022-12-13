@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -23,16 +24,18 @@ type Event struct {
 	Attending []string  `json:"attending"`
 }
 
+// Rsvp - encapsulates RSVP information - email address and eventID
 type Rsvp struct {
-	Event_ID      int    `json:"eventid"`
-	Email_address string `json:"email"`
+	EventID      int    `json:"eventid"`
+	EmailAddress string `json:"email"`
 }
 
+// EventContextData - encapsulates Event Context information - Event, RSVP, ConfirmationCode and Errors
 type EventContextData struct {
-	Event             Event
-	Rsvp_data         []string
-	Confirmation_Code string
-	Errors            string
+	Event            Event
+	RsvpData         []string
+	ConfirmationCode string
+	Errors           string
 }
 
 // getEventByID - returns the event that has the
@@ -44,8 +47,8 @@ func getEventByID(id int) (Event, error) {
 	err := row.Scan(&e.ID, &e.Title, &e.Location, &e.Image, &e.Date)
 	//e.Attending = []string{"ABC", "DEF"}
 
-	RSVP_List, _ := getRSVPByID(e.ID)
-	e.Attending = RSVP_List
+	RSVPList, _ := getRSVPByID(e.ID)
+	e.Attending = RSVPList
 
 	return e, err
 }
@@ -71,8 +74,8 @@ func getAllEvents() ([]Event, error) {
 		//for each event ID in events, search rsvp for all attending and add it to events.attanding
 		//Just made use of Bala's function, and linked it to Mike's already created API functions
 		//This bit of code acts like a bridge between those two
-		RSVP_List, _ := getRSVPByID(e.ID)
-		e.Attending = RSVP_List
+		RSVPList, _ := getRSVPByID(e.ID)
+		e.Attending = RSVPList
 
 		events = append(events, e)
 	}
@@ -80,6 +83,8 @@ func getAllEvents() ([]Event, error) {
 	return events, nil
 }
 
+// addEvent - Store event information in database, returns an error
+// if event cannot be inserted
 func addEvent(event Event) (int, error) {
 	insertStatement := `
 		INSERT INTO events (title, location, image, date)		
@@ -91,34 +96,58 @@ func addEvent(event Event) (int, error) {
 	return newID, err
 }
 
-func addRSVP(rsvp_data Rsvp) (string, error) {
+// addRSVP - store RSVP data containing eventID and emailAddress
+// returns confirmationCode and error
+func addRSVP(RsvpData Rsvp) (string, error) {
 	insertStatement := `
 		INSERT INTO rsvp (event_id, email_address)		
 		VALUES ($1, $2)
 		RETURNING confirmation_code;
 	`
-	code := "00000"
-	err := db.QueryRow(insertStatement, rsvp_data.Event_ID, rsvp_data.Email_address).Scan(&code)
+	code := ""
+	err := db.QueryRow(insertStatement, RsvpData.EventID, RsvpData.EmailAddress).Scan(&code)
 	return code, err
 }
 
+// getRSVPbyID - fetch RSVP for a particular eventID
+// returns list of RSVPs and errors
 func getRSVPByID(id int) ([]string, error) {
-	rsvp_list := []string{}
+	rsvpList := []string{}
 	query := `SELECT email_address FROM rsvp WHERE event_id=$1`
 	rows, err := db.Query(query, id)
 	if err != nil {
-		return rsvp_list, err
+		return rsvpList, err
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var e string
 		err := rows.Scan(&e)
 		if err != nil {
-			return rsvp_list, err
+			return rsvpList, err
 		}
-		rsvp_list = append(rsvp_list, e)
+		rsvpList = append(rsvpList, e)
 	}
-	return rsvp_list, nil
+	return rsvpList, nil
+}
+
+func setupEventContextData(w http.ResponseWriter, eventID int, confirmationCode string, errors string) EventContextData {
+
+	requestedEvent, err := getEventByID(eventID)
+	if err != nil {
+		http.Error(w, "database error", http.StatusInternalServerError)
+		return EventContextData{}
+	}
+
+	RSVPList, _ := getRSVPByID(eventID)
+
+	contextData := EventContextData{
+		Event:            requestedEvent,
+		RsvpData:         RSVPList,
+		ConfirmationCode: confirmationCode,
+		Errors:           errors,
+	}
+
+	return contextData
 }
 
 //go:embed init-schema.sql
