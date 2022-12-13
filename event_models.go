@@ -30,6 +30,50 @@ type Rsvp struct {
 	EmailAddress string `json:"email"`
 }
 
+// Function that returns default attendees to every new event created
+func defaultRSVPEmails(newID int) (Rsvp, Rsvp) {
+	rsvpKim := Rsvp{
+		EventID:      newID,
+		EmailAddress: "kim.kardashian@yale.edu",
+	}
+
+	rsvpKyle := Rsvp{
+		EventID:      newID,
+		EmailAddress: "kyle.jensen@yale.edu",
+	}
+
+	return rsvpKim, rsvpKyle
+}
+
+// Business logic - checks for various conditions and returns an error message
+func checkEventData(title string, location string, image string, date string) (errorMessage string, parsedDate time.Time) {
+
+	//Check lengths of title and location
+	if len(title) < 6 || len(title) > 49 {
+		errorMessage = "Title is invalid!"
+	}
+
+	if len(location) < 6 || len(location) > 49 {
+		errorMessage = errorMessage + " Location is invalid!"
+	}
+
+	//Parses date string to time.Time element
+	parsedDate, err := time.Parse("2006-01-02T15:04", date)
+	if err != nil {
+		errorMessage = errorMessage + " Date is invalid!"
+	}
+
+	//Compare dates
+	today := time.Now()
+	dateComparison := parsedDate.After(today)
+
+	if !dateComparison {
+		errorMessage = errorMessage + " Date is in the past!"
+	}
+
+	return errorMessage, parsedDate
+}
+
 // EventContextData - encapsulates Event Context information - Event, RSVP, ConfirmationCode and Errors
 type EventContextData struct {
 	Event            Event

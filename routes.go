@@ -16,8 +16,8 @@ func createRoutes() chi.Router {
 	r.Get("/about", aboutController)
 	r.Post("/events/{event_id:[0-9]+}", eventsController)
 	r.Get("/events/{event_id:[0-9]+}", eventsController)
-	r.Get("/events/new", createController)
-	r.Post("/events/new-event-created", addNewEventController) //Form returns a post action, so the Chi controller needs POST to respond to it
+	r.Get("/events/new", addNewEventController)
+	r.Post("/events/new", addNewEventController) //Form returns a post action, so the Chi controller needs POST to respond to it
 	r.Get("/api/events", apiEventListController)
 	r.Get("/api/events/{event_id}", apiEventDetailController)
 	addStaticFileServer(r, "/static/", "staticfiles")
