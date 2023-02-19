@@ -1,4 +1,8 @@
-## Team SuperSaiyan's Eventbrite Clone
+# MGT 660 - Advanced Management of Software Development
+2nd year elective at Yale School of Management, as part of the MBA program
+## Final Project - Coding a basic Eventbrite Clone in Golang
+A fully functioning but basic Eventbrite clone written in Go and hosted in Heroku. Sprint reports are located here https://github.com/nithin-seenivasan/project-report-supersaiyan 
+
 
 ## What is here
 
